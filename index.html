@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los Santos Live Hub · Hecho por Pepe</title>
+<meta name="theme-color" content="#0a0716"><meta name="description" content="Trivial, ruleta de retos, contador de fails y más para streamers de GTA V. Hecho por Pepe."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bungee&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{--pink:#ff2d95;--cyan:#00e5ff;--violet:#8b5cf6;--sun:#ffb347;--bg:#0a0716;--card:#140d2b;--ink:#f6f0ff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:auto}
+body{margin:0;background:radial-gradient(circle at 15% -10%,#3b0f5c 0,transparent 45%),radial-gradient(circle at 95% 8%,#0b3a5a 0,transparent 40%),var(--bg);color:var(--ink);font-family:Rajdhani,system-ui,sans-serif;font-size:18px;min-height:100vh}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:40}
+.fd{font-family:Bungee,Impact,sans-serif;letter-spacing:.02em}
+.np{color:#fff;text-shadow:0 0 6px var(--pink),0 0 18px var(--pink),0 0 42px var(--pink)}
+.nc{color:#fff;text-shadow:0 0 6px var(--cyan),0 0 18px var(--cyan),0 0 40px var(--cyan)}
+.card{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.015)),var(--card);border:1px solid rgba(255,45,149,.35);border-radius:1.25rem;box-shadow:0 0 28px rgba(139,92,246,.2)}
+.btn{background:linear-gradient(90deg,var(--pink),var(--violet));color:#fff;font-weight:700;border-radius:.9rem;padding:.7rem 1.3rem;box-shadow:0 0 18px rgba(255,45,149,.5);transition:transform .12s,filter .12s;cursor:pointer;border:0;font-family:inherit;font-size:1.05rem}
+.btn:hover{filter:brightness(1.15)}.btn:active{transform:scale(.95)}
+.btn.alt{background:linear-gradient(90deg,#0891b2,var(--cyan));color:#06121c;box-shadow:0 0 18px rgba(0,229,255,.45)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.3);box-shadow:none}
+.tb{flex:none;padding:.45rem .9rem;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--ink);font-weight:700;font-family:inherit;font-size:1rem;cursor:pointer;white-space:nowrap}
+.tb.on{background:var(--pink);border-color:var(--pink);box-shadow:0 0 16px var(--pink)}
+.live{display:inline-flex;align-items:center;gap:.4rem;background:#e11d48;color:#fff;font-weight:700;border-radius:.5rem;padding:.15rem .6rem;font-size:.95rem}
+.live i{width:.6rem;height:.6rem;border-radius:50%;background:#fff;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+.by{font-weight:700;color:var(--cyan);border:1px solid rgba(0,229,255,.5);border-radius:999px;padding:.1rem .7rem;font-size:.95rem;text-shadow:0 0 8px var(--cyan);white-space:nowrap}
+.ib{background:none;border:0;font-size:1.3rem;cursor:pointer;color:var(--ink)}
+.opt{display:block;width:100%;text-align:left;padding:.8rem 1rem;margin-top:.6rem;border-radius:.9rem;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);color:var(--ink);font-family:inherit;font-weight:600;font-size:1.1rem;cursor:pointer;transition:background .15s}
+.opt:hover:not(:disabled){background:rgba(139,92,246,.35)}
+.opt.good{background:#15803d;border-color:#4ade80}.opt.bad{background:#b91c1c;border-color:#f87171}
+.bar{height:.6rem;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden}.bar>div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));width:100%}
+#wheel{transition:transform 4.5s cubic-bezier(.12,.7,.1,1);will-change:transform}
+.big{font-family:Bungee,Impact,sans-serif;line-height:1}
+.bump{animation:bump .35s}@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-3deg)}100%{transform:scale(1)}}
+.flash{animation:flash .4s}@keyframes flash{0%{box-shadow:0 0 0 0 rgba(239,68,68,.9),inset 0 0 60px rgba(239,68,68,.6)}100%{box-shadow:0 0 28px rgba(139,92,246,.2)}}
+.hidden{display:none}
+.screen{position:relative;aspect-ratio:16/9;border-radius:1rem;overflow:hidden;background:linear-gradient(160deg,#3b0f5c,#ff2d95 60%,#ff7a18);display:flex;align-items:center;justify-content:center;border:2px solid var(--cyan);box-shadow:0 0 30px rgba(0,229,255,.35)}
+.play{width:4.5rem;height:4.5rem;border-radius:50%;border:3px solid #fff;background:rgba(0,0,0,.4);color:#fff;font-size:2rem;cursor:pointer}
+#pc{image-rendering:pixelated;width:min(80vw,320px);border-radius:1rem;border:3px solid var(--cyan);box-shadow:0 0 28px rgba(0,229,255,.4)}
+.inp{flex:1;min-width:0;background:#fff;color:#111;font-family:inherit;font-size:1.05rem;border-radius:.75rem;padding:.6rem .8rem;border:0}
+.star{font-size:clamp(2.5rem,12vw,4.5rem);background:none;border:0;color:#4b4363;cursor:pointer;line-height:1;padding:0 .1rem}.star.on{color:#fde047;text-shadow:0 0 18px #facc15}
+.siren{height:.7rem;border-radius:99px;background:linear-gradient(90deg,#ef4444 50%,#3b82f6 50%);background-size:200% 100%;animation:sir .5s steps(2) infinite;opacity:0;transition:opacity .2s}@keyframes sir{to{background-position:-200% 0}}
+body.obs #hd,body.obs #foot{display:none}
+#obsx{display:none;position:fixed;top:calc(env(safe-area-inset-top,0px) + 6px);right:8px;z-index:50;opacity:.3}
+body.obs #obsx{display:block}
+.sw{border-radius:1rem;padding:1rem;font-weight:700;text-align:center;color:#fff}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="palm" viewBox="0 0 120 220"><path d="M52 220C58 160 54 120 62 72" stroke="#12051f" stroke-width="7" fill="none" stroke-linecap="round"/>
+<g transform="translate(62 72)" fill="#12051f"><path id="fr" d="M0 0C20-28 56-30 78-6C50-16 22-10 0 0Z"/><path d="M0 0C20-28 56-30 78-6C50-16 22-10 0 0Z" transform="rotate(40)"/><path d="M0 0C20-28 56-30 78-6C50-16 22-10 0 0Z" transform="rotate(95)"/><path d="M0 0C-20-28-56-30-78-6C-50-16-22-10 0 0Z"/><path d="M0 0C-20-28-56-30-78-6C-50-16-22-10 0 0Z" transform="rotate(-40)"/><path d="M0 0C-20-28-56-30-78-6C-50-16-22-10 0 0Z" transform="rotate(-95)"/></g></symbol>
+</defs></svg>
+
+<header id="hd" class="sticky z-30" style="top:env(safe-area-inset-top,0px);background:rgba(10,7,22,.88);border-bottom:1px solid rgba(255,45,149,.4)">
+  <div class="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between gap-2">
+    <span class="live"><i></i>🔴 LIVE</span>
+    <h1 class="fd np text-center leading-tight text-sm sm:text-2xl m-0">LOS SANTOS LIVE HUB</h1>
+    <span class="flex items-center gap-1"><span class="by">Hecho por Pepe</span><button class="ib" id="snd" onclick="toggleSnd()" aria-label="Sonido">🔊</button></span>
+  </div>
+  <nav class="max-w-5xl mx-auto px-3 pb-2 flex gap-2 overflow-x-auto">
+    <button class="tb" data-tab="s1" onclick="go('s1')">🧠 Trivial</button>
+    <button class="tb" data-tab="s2" onclick="go('s2')">🎡 Ruleta</button>
+    <button class="tb" data-tab="s3" onclick="go('s3')">💀 Fails</button>
+    <button class="tb" data-tab="s4" onclick="go('s4')">🗺️ Zonas</button>
+    <button class="tb" data-tab="s8" onclick="go('s8')">🕵️ Personaje</button>
+    <button class="tb" data-tab="s7" onclick="go('s7')">🎬 Cine</button>
+    <button class="tb" data-tab="s6" onclick="go('s6')">⭐ Extras</button>
+    <button class="tb" data-tab="s5" onclick="go('s5')">🌴 GTA VI</button>
+  </nav>
+</header>
+<button id="obsx" class="btn ghost" onclick="obs()">Salir modo OBS</button>
+
+<main class="max-w-5xl mx-auto p-3 sm:p-6">
+
+<section id="s1" class="tab">
+  <div class="card p-4 sm:p-6 max-w-2xl mx-auto"><h2 class="fd nc text-xl sm:text-3xl m-0 mb-3">Trivial de GTA V</h2><div id="trivia"></div></div>
+</section>
+
+<section id="s2" class="tab hidden">
+  <div class="card p-4 sm:p-6 max-w-2xl mx-auto text-center">
+    <h2 class="fd np text-xl sm:text-3xl m-0 mb-4">Ruleta criminosa de retos</h2>
+    <div class="relative mx-auto" style="width:min(86vw,380px)">
+      <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);z-index:5;width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:32px solid #fff;filter:drop-shadow(0 0 8px var(--cyan))"></div>
+      <div id="wheel"><canvas id="wc" width="360" height="360" style="width:100%;border-radius:50%;border:4px solid #fff;box-shadow:0 0 30px rgba(255,45,149,.6)"></canvas></div>
+    </div>
+    <button class="btn mt-6 w-full sm:w-auto fd" style="font-size:1.6rem;padding:1rem 2.5rem" onclick="spinW()">¡GIRAR!</button>
+    <div id="rres" class="mt-5 text-2xl font-bold min-h-[3.5rem] nc">Pulsa y que decida el chat</div>
+    <div class="flex gap-2 mt-5"><input id="rin" class="inp" maxlength="60" placeholder="Reto propuesto por el chat…"><button class="btn alt" onclick="rAdd()">Añadir</button></div>
+    <button class="btn ghost mt-2" style="font-size:.95rem;padding:.4rem 1rem" onclick="rReset()">Restablecer retos</button>
+    <div id="rhist" class="mt-3 text-left text-base opacity-80"></div>
+  </div>
+</section>
+
+<section id="s3" class="tab hidden">
+  <div id="fcard" class="card p-4 sm:p-6 max-w-3xl mx-auto text-center">
+    <h2 class="fd np text-xl sm:text-3xl m-0">Contador de fails</h2>
+    <div id="ft" class="big nc my-4" style="font-size:clamp(6rem,28vw,13rem)">0</div>
+    <div id="fmsg" class="text-xl font-bold mb-5">Sesión limpia 😇</div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="card p-4"><div class="text-xl font-bold">🚗 Atropellado</div><div id="fa" class="big text-5xl my-2">0</div>
+        <div class="flex gap-3 justify-center"><button class="btn" style="font-size:1.6rem;padding:.8rem 2rem" onclick="fAdd('a',1)">+1</button><button class="btn ghost" style="font-size:1.6rem;padding:.8rem 2rem" onclick="fAdd('a',-1)">−1</button></div></div>
+      <div class="card p-4"><div class="text-xl font-bold">🚔 Por la policía</div><div id="fp" class="big text-5xl my-2">0</div>
+        <div class="flex gap-3 justify-center"><button class="btn alt" style="font-size:1.6rem;padding:.8rem 2rem" onclick="fAdd('p',1)">+1</button><button class="btn ghost" style="font-size:1.6rem;padding:.8rem 2rem" onclick="fAdd('p',-1)">−1</button></div></div>
+    </div>
+    <button id="frst" class="btn ghost mt-5" onclick="fReset()">Reiniciar sesión</button>
+  </div>
+</section>
+
+<section id="s4" class="tab hidden">
+  <div class="card p-4 sm:p-6 max-w-2xl mx-auto"><h2 class="fd nc text-xl sm:text-3xl m-0 mb-3">Adivina la zona de Los Santos</h2><div id="zone"></div></div>
+</section>
+
+<section id="s5" class="tab hidden">
+  <div class="max-w-4xl mx-auto">
+    <div class="card overflow-hidden">
+      <svg viewBox="0 0 700 280" class="w-full block" role="img" aria-label="Atardecer neón con palmeras">
+        <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b0b3a"/><stop offset=".65" stop-color="#b0206f"/><stop offset="1" stop-color="#ff7a18"/></linearGradient>
+        <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe45e"/><stop offset="1" stop-color="#ff2d95"/></linearGradient>
+        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b0f5c"/><stop offset="1" stop-color="#0a0716"/></linearGradient></defs>
+        <rect width="700" height="280" fill="url(#sky)"/>
+        <circle cx="350" cy="150" r="88" fill="url(#sun)"/>
+        <g fill="#b0206f"><rect x="250" y="150" width="200" height="4"/><rect x="250" y="166" width="200" height="7"/><rect x="250" y="184" width="200" height="10"/><rect x="250" y="204" width="200" height="14"/></g>
+        <rect y="200" width="700" height="80" fill="url(#sea)"/>
+        <g stroke="#00e5ff" stroke-opacity=".5" stroke-width="1.5"><path d="M0 215H700M0 235H700M0 260H700"/><path d="M350 200L40 280M350 200L200 280M350 200L350 280M350 200L500 280M350 200L660 280"/></g>
+        <use href="#palm" x="20" y="30" width="150" height="260"/><use href="#palm" x="560" y="50" width="120" height="230"/><use href="#palm" x="140" y="110" width="80" height="150"/>
+        <text x="350" y="62" text-anchor="middle" font-family="Bungee,Impact,sans-serif" font-size="46" fill="#fff" style="filter:drop-shadow(0 0 8px #ff2d95) drop-shadow(0 0 22px #ff2d95)">VICE CITY</text>
+        <text x="350" y="92" text-anchor="middle" font-family="Rajdhani,sans-serif" font-weight="700" font-size="20" fill="#00e5ff" style="filter:drop-shadow(0 0 8px #00e5ff)">Leonida · noche de neón</text>
+      </svg>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div class="card p-4"><h3 class="fd np text-lg m-0">🌴 Leonida</h3><p class="m-0 mt-2">Estado ficticio de inspiración tropical: costa, humedales y carreteras con vistas al mar.</p></div>
+      <div class="card p-4"><h3 class="fd nc text-lg m-0">🌃 Vice City de noche</h3><p class="m-0 mt-2">Rótulos de neón, asfalto mojado y paseos marítimos iluminados en rosa y turquesa.</p></div>
+      <div class="card p-4"><h3 class="fd np text-lg m-0">🏖️ Playas y palmeras</h3><p class="m-0 mt-2">Atardeceres anaranjados, siluetas de palmeras y cielos degradados.</p></div>
+      <div class="card p-4"><h3 class="fd nc text-lg m-0">📱 Estética de redes</h3><p class="m-0 mt-2">Planos verticales, marcos limpios y colores saturados, pensados para capturar en OBS.</p></div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+      <div class="sw" style="background:#ff2d95">Rosa neón</div><div class="sw" style="background:#00e5ff;color:#06121c">Turquesa</div>
+      <div class="sw" style="background:#ff7a18">Atardecer</div><div class="sw" style="background:#8b5cf6">Violeta noche</div>
+    </div>
+    <div class="text-center mt-5"><button class="btn alt" onclick="obs()">🎥 Modo OBS (ocultar cabecera y pie)</button>
+    <p class="text-sm opacity-70 mt-3">Decoración fan-made inspirada en el estilo visual público de Vice City. Sin contenido argumental.</p></div>
+  </div>
+</section>
+<section id="s6" class="tab hidden"><div class="max-w-3xl mx-auto grid gap-4">
+  <div class="card p-4 text-center"><h2 class="fd np text-xl sm:text-2xl m-0">Nivel de búsqueda</h2><div id="stars" class="flex justify-center gap-1 my-2"></div><div id="siren" class="siren"></div><p class="m-0 mt-2 text-base opacity-80">Toca una estrella para marcar el nivel. Tócala otra vez para quitarlo.</p></div>
+  <div class="card p-4 text-center"><h2 class="fd nc text-xl sm:text-2xl m-0">Apodo criminal para el chat</h2><div class="flex gap-2 mt-3"><input id="nm" class="inp" maxlength="24" placeholder="Nombre del espectador"><button class="btn alt" onclick="nick()">Generar</button></div><div id="nres" class="fd text-xl mt-3 min-h-[2rem]"></div></div>
+  <div class="card p-4 text-center"><h2 class="fd np text-xl sm:text-2xl m-0">Cronómetro del directo</h2><div id="swt" class="big nc my-3" style="font-size:clamp(3rem,14vw,6rem)">00:00:00</div><div class="flex gap-3 justify-center"><button id="swb" class="btn" onclick="swGo()">Iniciar</button><button class="btn ghost" onclick="swReset()">Reiniciar</button></div></div>
+</div></section>
+<section id="s7" class="tab hidden"><div class="max-w-4xl mx-auto">
+  <div class="card p-4 sm:p-6 text-center"><h2 class="fd np text-xl sm:text-3xl m-0">Sala Vice City</h2><p class="m-0 mt-1 opacity-80">Tráilers y vídeos oficiales de GTA VI de Rockstar Games</p></div>
+  <div id="cine" class="grid gap-4 mt-4"></div>
+  <p class="text-sm opacity-70 text-center mt-3">Si el vídeo no se reproduce aquí, usa «Abrir en YouTube».</p>
+</div></section>
+<section id="s8" class="tab hidden"><div class="card p-4 sm:p-6 max-w-2xl mx-auto text-center"><h2 class="fd nc text-xl sm:text-3xl m-0">¿Quién es el personaje?</h2><p class="m-0 mt-1 mb-3 opacity-80">Homenaje a GTA V: despixela la imagen y adivina quién es.</p><div id="pg"></div></div></section>
+</main>
+
+<footer id="foot" class="text-center py-6 opacity-90"><span class="by">Hecho por Pepe</span><div class="text-sm opacity-60 mt-2">Los Santos Live Hub · prototipo para streamers</div><div class="text-xs opacity-50 mt-1 px-4">Proyecto de fans, no oficial. No está afiliado a Rockstar Games ni a Take-Two. GTA es marca de sus propietarios.</div></footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let snd=true,ac,cur='s1';
+function beep(f=440,d=.12,t='square'){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d)}catch(e){}}
+function toggleSnd(){snd=!snd;$('#snd').textContent=snd?'🔊':'🔇'}
+function obs(){document.body.classList.toggle('obs')}
+function go(id){cur=id;$$('.tab').forEach(t=>t.classList.toggle('hidden',t.id!==id));$$('[data-tab]').forEach(b=>b.classList.toggle('on',b.dataset.tab===id));stopZ();if(id==='s4')zIntro();if(id==='s8'&&!P.r)pStart();if(id!=='s7')cineReset();scrollTo(0,0)}
+
+/* ---------- TRIVIAL ---------- */
+const TQ=[
+["¿En qué ciudad ficticia transcurre GTA V?","Los Santos","San Fierro","Vice City","Liberty City"],
+["¿Qué raza es Chop, el perro de Franklin?","Rottweiler","Pitbull","Pastor alemán","Dóberman"],
+["¿Quién es el mejor amigo de Franklin al inicio del juego?","Lamar Davis","Lester Crest","Ron Jakowski","Wade Hebert"],
+["¿Cómo se llama la empresa de Trevor?","Trevor Philips Industries","Philips & Co.","Sandy Shores Corp.","Blaine Transport"],
+["¿Dónde ocurre el prólogo nevado del juego?","Ludendorff (North Yankton)","Paleto Bay","Sandy Shores","Grapeseed"],
+["¿Quién es el genio que planifica los golpes del trío?","Lester Crest","Devin Weston","Steve Haines","Martin Madrazo"],
+["¿Cómo se llama el psiquiatra de Michael?","Dr. Friedlander","Dr. Haines","Dr. Weston","Dr. Madrazo"],
+["¿Para qué agencia trabaja el agente Steve Haines?","FIB","IAA","LSPD","Merryweather"],
+["¿En qué estado ficticio está Los Santos?","San Andreas","Leonida","Liberty","Carcer"],
+["¿Cómo se llama el famoso letrero de la colina de Los Santos?","Vinewood","Hollywood","Richman","Rockford"],
+["¿En qué año salió GTA V por primera vez?","2013","2011","2015","2010"],
+["¿A qué banda pertenece Franklin al principio?","Los Families","Los Ballas","Los Vagos","The Lost MC"],
+["¿Cómo se llama el hijo de Michael, fan de los videojuegos?","Jimmy","Tom","Dave","Lamar"],
+["¿Cómo se llama la hija de Michael que sueña con la fama?","Tracey","Amanda","Denise","Molly"],
+["¿Cómo se llama la tía de Franklin?","Denise","Tanisha","Amanda","Patricia"],
+["¿Cómo se llama la esposa de Michael?","Amanda","Tracey","Patricia","Molly"],
+["¿Cómo se llama la empresa mercenaria de GTA V?","Merryweather","Binco","Ammu-Nation","Pißwasser"],
+["¿Cómo se llama la tienda de armas de la saga?","Ammu-Nation","Gun Hub","Pistol Pete","Armas Loco"],
+["¿Qué marca ficticia fabrica el superdeportivo Adder?","Truffade","Dinka","Karin","Vapid"],
+["¿Cómo se llama la red social ficticia de GTA V?","Life Invader","Faceplace","Chirp","Instagrim"],
+["¿Cómo se llama el buscador ficticio de internet en el juego?","Eyefind","Googol","Bing","Yahoo"],
+["¿Cuál es la cerveza ficticia más famosa de la saga?","Pißwasser","Heineken","Corona","Budweiser"],
+["¿Cómo se llama la joyería del golpe de Los Santos?","Vangelico","Cartier","Tiffany","Swarovski"],
+["¿Dónde vive Trevor en el desierto?","Sandy Shores","Paleto Bay","Grapeseed","Vespucci"],
+["¿Cómo se llama el condado rural del norte?","Blaine County","Vinewood County","Paleto County","Leonida County"],
+["¿Cuántos protagonistas jugables tiene GTA V?","Tres","Dos","Cuatro","Uno"],
+["¿Quién es el compañero de Trevor apodado «Nervioso»?","Ron Jakowski","Wade Hebert","Floyd Hebert","Lamar Davis"],
+["¿Cómo se llama el productor de cine amigo de Michael?","Solomon Richards","Devin Weston","Martin Madrazo","Lester Crest"],
+["¿Cómo se llama la policía de Los Santos?","LSPD","FBI","NYPD","SAPD"],
+["¿Qué significan las siglas FIB?","Federal Investigation Bureau","Fast Intervention Bureau","Final Intelligence Bureau","First Intelligence Branch"],
+["¿Cómo se llama la hamburguesería ficticia de la saga?","Burger Shot","McBurger","Burger Town","Carl's Burgers"],
+["¿Para qué concesionario trabaja Franklin al inicio?","Premium Deluxe Motorsport","Los Santos Customs","Larry's RV Sales","Pfister Motors"],
+["¿Cómo se llama el modo multijugador de GTA V?","GTA Online","GTA Live","Los Santos Online","Social Club Play"],
+["¿Cuál es una tienda de ropa de lujo en GTA V?","Ponsonbys","Binco","Suburban","Discount Store"]];
+const T={};
+function tStart(){T.q=sh(TQ).slice(0,10).map(([q,c,...w])=>({q,o:sh([c,...w].map((t,k)=>({t,ok:!k})))}));T.i=0;T.s=0;T.st=0;T.ok=0;T.lock=false;tRender()}
+function tStats(){const b=Math.max(store.get('best',0),T.s);return `<div class="flex justify-between text-base font-bold mb-2"><span>Pregunta ${Math.min(T.i+1,10)}/10</span><span>⭐ <b id="ts">${T.s}</b></span><span>🔥 Racha <b id="tst">${T.st}</b></span><span>🏆 ${b}</span></div>`}
+function tRender(){
+  if(T.i>=T.q.length){const r=T.ok>=9?'🏆 Leyenda de Los Santos':T.ok>=7?'😎 Atracador profesional':T.ok>=4?'🚗 Chorizo de Strawberry':'🤕 Turista perdido';
+    if(T.s>store.get('best',0))store.set('best',T.s);
+    $('#trivia').innerHTML=`<div class="text-center py-6"><p class="fd text-2xl nc m-0">${r}</p><p class="text-xl mt-3">${T.ok}/10 aciertos · ${T.s} puntos</p><button class="btn mt-4" onclick="tStart()">Jugar otra vez</button></div>`;return}
+  const q=T.q[T.i];T.lock=false;
+  $('#trivia').innerHTML=tStats()+`<div class="bar mb-4"><div style="width:${T.i*10}%"></div></div><p class="text-2xl font-bold m-0">${q.q}</p>`+q.o.map((o,k)=>`<button class="opt" data-k="${k}" onclick="tPick(${k})">${o.t}</button>`).join('')+`<div id="tnx" class="mt-4 text-center"></div>`}
+function tPick(k){if(T.lock)return;T.lock=true;const q=T.q[T.i];
+  $$('#trivia .opt').forEach((b,j)=>{b.disabled=true;if(q.o[j].ok)b.classList.add('good');else if(j===k)b.classList.add('bad')});
+  if(q.o[k].ok){T.ok++;T.st++;T.s+=100+T.st*10;beep(880,.15)}else{T.st=0;beep(180,.3,'sawtooth')}
+  $('#ts').textContent=T.s;$('#tst').textContent=T.st;
+  $('#tnx').innerHTML=`<button class="btn" onclick="T.i++;tRender()">${T.i>=9?'Ver resultado':'Siguiente'}</button>`}
+
+/* ---------- RULETA ---------- */
+const RT=[['🚔','Consigue 3 estrellas y aguanta 1 minuto'],['🚗','Conduce solo marcha atrás durante 2 minutos'],['🥊','Solo puños: prohibido usar armas 5 minutos'],['🛩️','Aterriza un avión en la playa'],['🚲','Solo bicicleta hasta la próxima misión'],['🧍','Prohibido correr: ve andando a todas partes'],['🏍️','Salta en moto desde el Monte Chiliad'],['🐢','Roba el coche más lento y llévalo al puerto'],['🔁','Cambia de personaje cada vez que el chat escriba YA'],['🏖️','Baila en la playa de Vespucci durante 30 segundos']];
+const RT0=RT.slice();let rot=0,spin=false,rh=[];
+function rAdd(){if(spin||RT.length>=14)return;const v=$('#rin').value.replace(/[<>&]/g,'').trim();if(!v)return;RT.push([['🎯','💥','🔥','⚡'][RT.length%4],v.slice(0,60)]);$('#rin').value='';store.set('rx',RT.slice(RT0.length));drawW()}
+function rReset(){if(spin)return;RT.length=RT0.length;store.set('rx',[]);drawW()}
+function drawW(){const c=$('#wc'),x=c.getContext('2d'),n=RT.length,s=2*Math.PI/n,R=180;x.clearRect(0,0,360,360);
+  RT.forEach((r,i)=>{x.beginPath();x.moveTo(R,R);x.arc(R,R,R-4,-Math.PI/2+i*s,-Math.PI/2+(i+1)*s);x.closePath();x.fillStyle=`hsl(${(i*360/n+290)%360},80%,${i%2?42:30}%)`;x.fill();x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=2;x.stroke();
+    const a=-Math.PI/2+(i+.5)*s;x.font='34px serif';x.textAlign='center';x.textBaseline='middle';x.fillText(r[0],R+Math.cos(a)*R*.72,R+Math.sin(a)*R*.72)});
+  x.beginPath();x.arc(R,R,22,0,7);x.fillStyle='#0a0716';x.fill();x.strokeStyle='#fff';x.stroke()}
+function spinW(){if(spin)return;spin=true;const n=RT.length,s=360/n,i=Math.random()*n|0;
+  const tgt=(360-(i+.5)*s+(Math.random()-.5)*s*.7+360)%360,d=(tgt-(rot%360)+360)%360;rot+=360*6+d;
+  $('#wheel').style.transform=`rotate(${rot}deg)`;$('#rres').textContent='Girando…';beep(300,.1);
+  setTimeout(()=>{spin=false;const r=RT[i];$('#rres').innerHTML=`${r[0]} ${r[1]}`;beep(660,.2);beep(990,.3);
+    rh.unshift(r[0]+' '+r[1]);rh=rh.slice(0,5);$('#rhist').innerHTML='<b>Últimos retos</b><br>'+rh.map(t=>'· '+t).join('<br>')},4600)}
+
+/* ---------- FAILS ---------- */
+let F=store.get('fails',{a:0,p:0}),rt;
+function fAdd(k,d){F[k]=Math.max(0,F[k]+d);store.set('fails',F);fRender(d)}
+function fRender(d){const t=F.a+F.p;$('#ft').textContent=t;$('#fa').textContent=F.a;$('#fp').textContent=F.p;
+  $('#fmsg').textContent=t===0?'Sesión limpia 😇':t<10?'Calentando motores 🔧':t<25?'El seguro ya no te coge el teléfono 📵':t<50?'Los Santos te conoce por tu nombre 💀':'Leyenda del fail absoluto 👑';
+  if(d>0){['#ft','#fcard'].forEach((s,j)=>{const e=$(s);e.classList.remove(j?'flash':'bump');void e.offsetWidth;e.classList.add(j?'flash':'bump')});beep(140,.25,'sawtooth')}else if(d<0)beep(520,.1)}
+function fReset(){const b=$('#frst');if(!rt){b.textContent='¿Seguro? Pulsa otra vez';rt=setTimeout(()=>{rt=0;b.textContent='Reiniciar sesión'},3000);return}
+  clearTimeout(rt);rt=0;b.textContent='Reiniciar sesión';F={a:0,p:0};store.set('fails',F);fRender(0)}
+
+/* ---------- ZONAS ---------- */
+const ZQ=[["El monte con el teleférico","Monte Chiliad"],["El muelle de los atracos","Puerto de Los Santos"],["El aeródromo del desierto","Sandy Shores"],["La base militar con cazas y tanques","Fuerte Zancudo"],["El muelle con noria y montaña rusa","Del Perro Pier"],["El pueblo costero del norte con aserradero","Paleto Bay"],["El observatorio bajo el gran letrero","Vinewood Hills"],["Grove Street, hogar de Los Families","Chamberlain Hills"],["El barrio de lujo de la mansión de Michael","Rockford Hills"],["El aeropuerto con aviones comerciales al sur","Aeropuerto Internacional (LSIA)"],["El barrio del lago, los hipsters y las bicis","Mirror Park"],["La playa de los canales, patinadores y gimnasio al aire libre","Vespucci Beach"],["El gran lago del desierto junto a Sandy Shores","Mar de Alamo"],["Los viñedos del oeste con la finca de vino","Tongva Hills"],["El pueblo agrícola con granjas del noreste","Grapeseed"],["La playa con el muelle de pesca del oeste","Chumash"],["El barrio del sur con la comisaría de Davis","Davis"],["El gran estadio de conciertos y deportes","Maze Bank Arena"]];
+const ZP=[...new Set(ZQ.map(z=>z[1])),"Grapeseed","Tongva Hills","Mar de Alamo","Banham Canyon","Chumash","Cypress Flats"];
+const Z={},ZT=12000;
+function stopZ(){clearInterval(Z.t);clearTimeout(Z.to)}
+function zIntro(){$('#zone').innerHTML=`<div class="text-center py-4"><p class="text-xl m-0">Lee la pista y elige la zona antes de que se acabe el tiempo (12 s). Más rápido, más puntos.</p><button class="btn mt-4" onclick="zStart()">¡Empezar!</button></div>`}
+function zStart(){Z.r=sh(ZQ).slice(0,10);Z.i=0;Z.s=0;Z.st=0;Z.ok=0;zRound()}
+function zStats(){return `<div class="flex justify-between text-base font-bold mb-2"><span>Ronda ${Math.min(Z.i+1,10)}/10</span><span>⭐ <b id="zs">${Z.s}</b></span><span>🔥 <b id="zst">${Z.st}</b></span><span>⏱️ <b id="zsec">12</b>s</span></div>`}
+function zRound(){stopZ();
+  if(Z.i>=Z.r.length){$('#zone').innerHTML=`<div class="text-center py-6"><p class="fd text-2xl np m-0">${Z.ok>=8?'🗺️ Cartógrafo de Los Santos':Z.ok>=5?'🧭 Conoces las calles':'🚕 Taxista novato'}</p><p class="text-xl mt-3">${Z.ok}/10 aciertos · ${Z.s} puntos</p><button class="btn mt-4" onclick="zStart()">Otra partida</button></div>`;return}
+  const [clue,ans]=Z.r[Z.i],o=sh([ans,...sh(ZP.filter(x=>x!==ans)).slice(0,3)]);Z.ans=ans;Z.lock=false;Z.t0=Date.now();
+  $('#zone').innerHTML=zStats()+`<div class="bar mb-4"><div id="zbar"></div></div><p class="text-2xl font-bold m-0">📍 «${clue}»</p>`+o.map((t,k)=>`<button class="opt" data-a="${t}" onclick="zPick(${k})">${t}</button>`).join('');
+  Z.o=o;Z.t=setInterval(()=>{const l=ZT-(Date.now()-Z.t0);$('#zbar').style.width=Math.max(0,l/ZT*100)+'%';$('#zsec').textContent=Math.ceil(Math.max(0,l)/1000);if(l<=0)zPick(-1)},100)}
+function zPick(k){if(Z.lock)return;Z.lock=true;clearInterval(Z.t);const l=Math.max(0,ZT-(Date.now()-Z.t0)),a=Z.o[k];
+  $$('#zone .opt').forEach(b=>{b.disabled=true;if(b.dataset.a===Z.ans)b.classList.add('good');else if(b.dataset.a===a)b.classList.add('bad')});
+  if(a===Z.ans){Z.ok++;Z.st++;Z.s+=100+Math.round(l/100)+Z.st*10;beep(880,.15)}else{Z.st=0;beep(180,.3,'sawtooth')}
+  $('#zs').textContent=Z.s;$('#zst').textContent=Z.st;
+  Z.to=setTimeout(()=>{Z.i++;zRound()},1700)}
+
+/* ---------- EXTRAS ---------- */
+let W=0;
+function wSet(n){W=W===n?0:n;$('#stars').innerHTML=[1,2,3,4,5].map(i=>`<button class="star${i<=W?' on':''}" onclick="wSet(${i})" aria-label="${i} estrellas">★</button>`).join('');$('#siren').style.opacity=W?1:0;if(W)beep(600+W*80,.1)}
+const pk=a=>a[Math.random()*a.length|0],NA=['El','Don','Míster','Capitán','Doctor'],NB=['Rápido','Patoso','Cangrejo','Neón','Atropello','Sin Frenos','Tiburón','Palmera','Turbo','Callejero'],NC=['de Strawberry','del Puerto','de Vinewood','del Chiliad','de Sandy Shores','de la Playa'];
+function nick(){const n=$('#nm').value.replace(/[<>&]/g,'').trim(),a=`${pk(NA)} ${pk(NB)} ${pk(NC)}`;$('#nres').textContent=n?`${n}, alias «${a}»`:`«${a}»`;beep(700,.12)}
+let sw={t:0,on:0,id:0,s:0};
+const fmt=ms=>{const s=ms/1000|0;return[s/3600|0,(s/60|0)%60,s%60].map(x=>String(x).padStart(2,'0')).join(':')};
+function swTick(){$('#swt').textContent=fmt(sw.t+(sw.on?Date.now()-sw.s:0))}
+function swGo(){if(sw.on){sw.t+=Date.now()-sw.s;sw.on=0;clearInterval(sw.id)}else{sw.s=Date.now();sw.on=1;sw.id=setInterval(swTick,250)}$('#swb').textContent=sw.on?'Pausar':'Iniciar';swTick()}
+function swReset(){clearInterval(sw.id);sw={t:0,on:0,id:0,s:0};$('#swb').textContent='Iniciar';swTick()}
+
+/* ---------- CINE ---------- */
+const TR=[['rz1B4B2yBZY','Tráiler de lanzamiento'],['_yl5ELcmugI','Tráiler «Pre-Load»'],['tJbzMqJGH4k','An Extended Look (26 min)'],[null,'Tráiler 1','Grand Theft Auto VI Trailer 1'],[null,'Tráiler 2','Grand Theft Auto VI Trailer 2']];
+const cineH=()=>TR.map((t,i)=>`<div class="card p-3"><div class="screen" id="v${i}">${t[0]?`<button class="play" onclick="playT(${i})" aria-label="Reproducir ${t[1]}">▶</button>`:'<span class="fd np text-2xl">GTA VI</span>'}</div><div class="flex items-center justify-between gap-2 mt-3 flex-wrap"><h3 class="fd nc text-lg m-0">${t[1]}</h3><a class="btn ghost" style="text-decoration:none;font-size:.95rem;padding:.4rem 1rem" href="${t[0]?'https://www.youtube.com/watch?v='+t[0]:'https://www.youtube.com/results?search_query='+encodeURIComponent(t[2])}" target="_blank" rel="noopener">${t[0]?'Abrir en YouTube':'Buscar en YouTube'}</a></div></div>`).join('');
+function playT(i){$('#cine').dataset.p=1;$('#v'+i).innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${TR[i][0]}?autoplay=1&rel=0" title="${TR[i][1]}" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>`}
+function cineReset(){const e=$('#cine');if(e&&e.dataset.p){e.dataset.p='';e.innerHTML=cineH()}}
+
+/* ---------- PERSONAJE ---------- */
+const CH=[
+{n:'Michael De Santa',h:'Ladrón retirado con mansión en Rockford Hills',s:'#e6b999',hr:'#9a9aa2',st:'slick',sh:'#1f2d52',x:['shades']},
+{n:'Franklin Clinton',h:'Joven de Strawberry que trabaja en un concesionario',s:'#7a4a2d',hr:'#111',st:'short',sh:'#3f6b4a',x:['chain']},
+{n:'Trevor Philips',h:'Vive en una caravana de Sandy Shores',s:'#d9a77f',hr:'#555',st:'bald',sh:'#b9a77a',x:['goatee']},
+{n:'Lamar Davis',h:'El mejor amigo de Franklin, de Grove Street',s:'#6b3f26',hr:'#2e7d32',st:'cap',sh:'#2e7d32',x:[]},
+{n:'Lester Crest',h:'El cerebro que planifica los golpes',s:'#e9c2a2',hr:'#3a2a20',st:'short',sh:'#5b6b7a',x:['glasses']},
+{n:'Chop',h:'El perro de Franklin',st:'dog'},
+{n:'Amanda De Santa',h:'Esposa de Michael',s:'#e6b999',hr:'#b5651d',st:'long',sh:'#c2185b',x:[]},
+{n:'Jimmy De Santa',h:'Hijo de Michael, fan de los videojuegos',s:'#e6b999',hr:'#d9b26f',st:'short',sh:'#37474f',x:[]},
+{n:'Tracey De Santa',h:'Hija de Michael que sueña con la fama',s:'#e6b999',hr:'#8a5a2b',st:'long',sh:'#00acc1',x:[]},
+{n:'Steve Haines',h:'Agente del FIB',s:'#e6b999',hr:'#2b2b2b',st:'slick',sh:'#111',x:['shades','mustache']}];
+const PS=[30,20,12,7,4,1],P={},ART={};
+function art(i){if(ART[i])return ART[i];const ch=CH[i],c=document.createElement('canvas');c.width=c.height=240;const g=c.getContext('2d'),b=g.createLinearGradient(0,0,0,240);b.addColorStop(0,'#3b0f5c');b.addColorStop(1,'#ff2d95');g.fillStyle=b;g.fillRect(0,0,240,240);
+  const E=(x,y,rx,ry,f)=>{g.fillStyle=f;g.beginPath();g.ellipse(x,y,rx,ry,0,0,7);g.fill()},R=(x,y,w,h,f)=>{g.fillStyle=f;g.fillRect(x,y,w,h)};
+  if(ch.st==='dog'){E(66,92,22,44,'#111');E(174,92,22,44,'#111');E(120,115,58,64,'#222');E(120,150,34,28,'#a0522d');E(120,134,12,8,'#000');E(98,100,6,6,'#fff');E(142,100,6,6,'#fff');R(70,186,100,14,'#c62828');return ART[i]=c}
+  g.fillStyle=ch.sh;g.beginPath();g.moveTo(30,240);g.quadraticCurveTo(45,172,120,166);g.quadraticCurveTo(195,172,210,240);g.fill();
+  R(105,140,30,36,ch.s);E(120,100,48,58,ch.s);
+  if(ch.st==='long'){R(68,70,16,100,ch.hr);R(156,70,16,100,ch.hr)}
+  g.fillStyle=ch.hr;
+  if(ch.st==='bald'){R(70,95,10,24,ch.hr);R(160,95,10,24,ch.hr)}else{g.beginPath();g.ellipse(120,82,50,ch.st==='slick'?30:36,0,Math.PI,2*Math.PI);g.fill();if(ch.st==='cap')R(80,80,110,10,ch.hr)}
+  R(100,98,8,8,'#111');R(132,98,8,8,'#111');R(108,130,24,4,'#7a2e2e');
+  const x=ch.x||[];
+  if(x.includes('goatee'))R(108,136,24,18,ch.hr);
+  if(x.includes('mustache'))R(102,121,36,6,'#2b2b2b');
+  if(x.includes('shades'))R(88,94,64,16,'#111');
+  if(x.includes('glasses')){g.strokeStyle='#111';g.lineWidth=4;g.strokeRect(92,92,22,18);g.strokeRect(126,92,22,18);R(114,98,12,3,'#111')}
+  if(x.includes('chain')){g.strokeStyle='#facc15';g.lineWidth=5;g.beginPath();g.arc(120,172,34,.2,Math.PI-.2);g.stroke()}
+  return ART[i]=c}
+function pix(){const sz=PS[P.lv],c=$('#pc'),g=c.getContext('2d'),t=document.createElement('canvas'),n=Math.ceil(240/sz);t.width=t.height=n;t.getContext('2d').drawImage(P.cv,0,0,n,n);g.imageSmoothingEnabled=false;g.clearRect(0,0,240,240);g.drawImage(t,0,0,n,n,0,0,240,240)}
+const pPts=()=>100-P.lv*18;
+function pStart(){P.r=sh(CH.map((_,i)=>i)).slice(0,10);P.i=0;P.s=0;P.ok=0;pRound()}
+function pStat(){$('#pstat').innerHTML=`<span>Personaje ${Math.min(P.i+1,10)}/10</span><span>⭐ ${P.s}</span><span>Vale <b id="ppt">${pPts()}</b> pts</span>`}
+function pRound(){
+  if(P.i>=P.r.length){$('#pg').innerHTML=`<div class="py-6"><p class="fd text-2xl np m-0">${P.ok>=8?'🏆 Fan número uno de GTA V':P.ok>=5?'😎 Conoces Los Santos':'🚕 Todavía eres turista'}</p><p class="text-xl mt-3">${P.ok}/10 aciertos · ${P.s} puntos</p><button class="btn mt-4" onclick="pStart()">Jugar otra vez</button></div>`;return}
+  const ci=P.r[P.i],c=CH[ci];P.c=c;P.cv=art(ci);P.lv=0;P.lock=false;
+  P.o=sh([c.n,...sh(CH.filter(x=>x!==c)).slice(0,3).map(x=>x.n)]);
+  $('#pg').innerHTML=`<div id="pstat" class="flex justify-between text-base font-bold mb-3"></div><canvas id="pc" width="240" height="240"></canvas><div id="ph" class="min-h-[1.6rem] mt-2 opacity-90"></div><button id="pd" class="btn alt my-3" onclick="pDe()">🔍 Despixelar</button>`+P.o.map((t,k)=>`<button class="opt" data-a="${t}" onclick="pPick(${k})">${t}</button>`).join('')+`<div id="pnx" class="mt-4"></div>`;pix();pStat()}
+function pDe(){if(P.lock||P.lv>=5)return;P.lv++;pix();if(P.lv>=2)$('#ph').textContent='💡 '+P.c.h;if(P.lv>=5)$('#pd').disabled=true;$('#ppt').textContent=pPts();beep(500+P.lv*60,.06)}
+function pPick(k){if(P.lock)return;P.lock=true;const a=P.o[k],ok=a===P.c.n,pts=pPts();
+  $$('#pg .opt').forEach(b=>{b.disabled=true;if(b.dataset.a===P.c.n)b.classList.add('good');else if(b.dataset.a===a)b.classList.add('bad')});
+  if(ok){P.ok++;P.s+=pts;beep(880,.15)}else beep(180,.3,'sawtooth');
+  P.lv=5;pix();$('#pd').disabled=true;$('#ph').textContent=P.c.n+' · '+P.c.h;pStat();
+  $('#pnx').innerHTML=`<button class="btn" onclick="P.i++;pRound()">${P.i>=9?'Ver resultado':'Siguiente'}</button>`}
+
+$('#cine').innerHTML=cineH();
+store.get('rx',[]).forEach(r=>{if(RT.length<14)RT.push(r)});
+go('s1');tStart();drawW();fRender(0);wSet(0);swTick();
+</script>
+</body>
+</html>
